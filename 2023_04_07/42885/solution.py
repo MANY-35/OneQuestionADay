@@ -3,8 +3,6 @@ limit = 100
 
 arr = sorted(people, reverse=True)
 
-count = 0
-
 i = 0
 while i < len(arr):
     if (arr[i] + arr[-1]) <= limit:
