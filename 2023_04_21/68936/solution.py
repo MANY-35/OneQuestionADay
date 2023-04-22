@@ -1,8 +1,6 @@
-
-
 def solution(arr):
     answer = [0,0]
-    def check(arr : list[list]):
+    def check(arr):
         n = arr[0][0]
         for l in arr:
             for e in l:
@@ -17,6 +15,3 @@ def solution(arr):
     
     check(arr)
     return answer
-
-arr = [[1,1,1,1,1,1,1,1],[0,1,1,1,1,1,1,1],[0,0,0,0,1,1,1,1],[0,1,0,0,1,1,1,1],[0,0,0,0,0,0,1,1],[0,0,0,0,0,0,0,1],[0,0,0,0,1,0,0,1],[0,0,0,0,1,1,1,1]]
-print(solution(arr))
