@@ -5,7 +5,6 @@ def check(record):
             f += 1
         else:
             f -= 1
-        
         if f < 0:
             return False
     return True

@@ -6,9 +6,11 @@ def solution(queue1, queue2):
     
     q1 = sum(que1)
     q2 = sum(que2)
-    if (q1+q2) % 2 != 0:
+    qs = q1 + q2
+    if qs % 2 != 0:
         return -1
-    check = sum(queue1)
+    
+    check = 0
     while q1 != q2:
         answer += 1
         if q1 > q2:
@@ -22,10 +24,7 @@ def solution(queue1, queue2):
             q2 -= t
             q1 += t
         
-        if q1 == check:
+        check += t
+        if check >= qs*2:
             return -1
     return answer
-
-queue1 = [1, 4]
-queue2 = [4, 8]
-print(solution(queue1, queue2))
