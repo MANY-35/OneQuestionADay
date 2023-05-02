@@ -1,6 +1,5 @@
 import re
 from itertools import permutations
-from collections import deque
 expression = "100-200*300-500+20"
 
 
@@ -35,13 +34,9 @@ for priority in priorities:
             num.pop(i+1)
             op.pop(i)
             index = [x-1 for x in index]
-
-       
-        
-        
+            
     if num[0] < 0:
         num[0] *= -1
-    print(max , num[0])
     max = num[0] if max < num[0] else max
 print(max)
 
