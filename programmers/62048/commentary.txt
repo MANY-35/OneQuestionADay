@@ -104,7 +104,6 @@ def solution(w,h):
     C = gcd(X, Y)
     X, Y =X//C, Y//C
     
-    c = 0
     if X==Y:
         c = X
     else:
