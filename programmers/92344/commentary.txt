@@ -1,0 +1,18 @@
+#LV3 파괴되지 않은 건물
+
+1차시도 (실패)
+def solution(board, skill):
+    for t, r1, c1, r2, c2, d in skill:
+        t = t*2 - 3
+        for i in range(r1, r2+1):
+            for j in range(c1, c2+1):
+                board[i][j] += (t)*d
+
+    answer = 0
+    for i in board:
+        for j in i:
+            if j > 0:
+                answer += 1
+    return answer
+정확성부분에서는 시간이 충분하여 다 성공했으나 당연하게도 효율성 부분에서
+시간초과가 발생했다. 
