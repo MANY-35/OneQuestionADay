@@ -10,45 +10,38 @@ def solution(play_time, adv_time, logs):
     play = StrtoSec(play_time)
     adv = StrtoSec(adv_time)
     timeline = [0 for _ in range(play+2)]
-
-    first, last = play, 0
+    
     for log in logs:
         s, e = map(StrtoSec, list(log.split('-')))
         timeline[s] += 1
-        timeline[e+1] -= 1
-        if first > s:
-            first = s
-        if last < e:
-            last = e
-
-    d = [0, len(timeline)]
+        timeline[e] -= 1
+        
+    s = 0
     for i in range(1, len(timeline)):
         timeline[i] += timeline[i-1]
+        
+        if i < play and i >= play-adv:
+            s += timeline[i]
+            
 
-        if timeline[i] > d[0]:
-            d = [timeline[i], i]
+    l, r = play-adv, play-1
+    # for i in range(adv):
+    #     s+=timeline[l+i]
+        
+    print(s)
     
-    print(SectoStr(first), SectoStr(last), SectoStr(d[1]))
+    index = l
+    m = s
+    while l > 0:
+        t = s - timeline[r] + timeline[l-1]
+        if t >= m:
+            m = t
+            index = l-1
+        s = t
+        l -= 1
+        r -= 1
 
-    
-    if last - first < adv:
-        if last - adv < 0:
-            return "00:00:00"
-        else:
-            return SectoStr(last-play)
-    
-    
-    l = d[1]
-    r = d[1] + adv
-    
-    if r > play:
-        return StrtoSec(play - r)
-    
-    while l > 0 and timeline[l-1] >= timeline[r]:
-        l-=1
-        r-=1
-
-    return SectoStr(l)
+    return SectoStr(index)
 
 
 play_time = "02:03:55"
@@ -56,3 +49,6 @@ adv_time = "00:14:15"
 logs = ["01:20:15-01:45:14", "00:40:31-01:00:00", "00:25:50-00:48:29", "01:30:59-01:53:29", "01:37:44-02:02:30"]
 
 print(solution(play_time, adv_time, logs))
+
+#7 8 11 12 18 24
+
