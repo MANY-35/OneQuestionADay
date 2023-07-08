@@ -15,21 +15,14 @@ def solution(play_time, adv_time, logs):
         s, e = map(StrtoSec, list(log.split('-')))
         timeline[s] += 1
         timeline[e] -= 1
-        
+    
     s = 0
     for i in range(1, len(timeline)):
         timeline[i] += timeline[i-1]
-        
         if i < play and i >= play-adv:
             s += timeline[i]
             
-
     l, r = play-adv, play-1
-    # for i in range(adv):
-    #     s+=timeline[l+i]
-        
-    print(s)
-    
     index = l
     m = s
     while l > 0:
@@ -42,13 +35,3 @@ def solution(play_time, adv_time, logs):
         r -= 1
 
     return SectoStr(index)
-
-
-play_time = "02:03:55"
-adv_time = "00:14:15"
-logs = ["01:20:15-01:45:14", "00:40:31-01:00:00", "00:25:50-00:48:29", "01:30:59-01:53:29", "01:37:44-02:02:30"]
-
-print(solution(play_time, adv_time, logs))
-
-#7 8 11 12 18 24
-
