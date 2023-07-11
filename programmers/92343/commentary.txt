@@ -47,3 +47,50 @@ def solution(info, edges):
 heapq로 우선순위를 설정하고 bfs 알고리즘을 응용하여 탐색하도록 코드를 작성해봤다.
 3분의 2정도의 케이스에서 실패했다. 우선 순위를 설정하는 방법이 잘 못된듯 하다.
 
+#2차시도 (실패)
+def counting(nodes, i, n=0):
+    nodes[i][1] = 1-nodes[i][0]
+    nodes[i][2] = nodes[i][0]
+    if nodes[i][3] == []:
+        if nodes[i][0]:
+            return [0, 1]
+        else:
+            return [1, 0]
+    for j in nodes[i][3]:
+        t = counting(nodes, j, n+1)
+        nodes[i][1] += t[0]
+        nodes[i][2] += t[1]
+    return [nodes[i][1], nodes[i][2]]
+
+def solution(info, edges):
+    nodes = {i:[f,0,0,[]] for i,f in enumerate(info)}
+    for p, c in edges:
+        nodes[p][3].append(c)
+    counting(nodes, 0, 0)
+    
+    que = [nodes[0]]
+    checker = []
+    s, w = 0, 0
+    while que != checker:
+        checker = que.copy()
+        temp = []
+        while que:
+            n = que.pop()
+            if n[0]:
+                if n[3]!=[]:
+                    if s>w+1:
+                        w += 1
+                        for i in n[3]:
+                            temp.append(nodes[i])
+                    else:
+                        temp.append(n)
+                        
+                    break
+            else:
+                s+=1
+                for i in n[3]:
+                    temp.append(nodes[i])
+        que = sorted(temp+que, key=lambda x:(-x[0],x[1],-x[2]))
+    return s
+우선순위에 여러가지 조건을 추가해보았는데 절반정도의 케이스에서 실패했으며
+무한루프에 빠지는 케이스가 존재했다. 
