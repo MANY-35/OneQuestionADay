@@ -93,4 +93,4 @@ def solution(info, edges):
         que = sorted(temp+que, key=lambda x:(-x[0],x[1],-x[2]))
     return s
 우선순위에 여러가지 조건을 추가해보았는데 절반정도의 케이스에서 실패했으며
-무한루프에 빠지는 케이스가 존재했다. 
+무한루프에 빠지는 케이스가 존재했다.

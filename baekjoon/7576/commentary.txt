@@ -1,0 +1,161 @@
+#골드5 토마토
+
+#1차시도 (실패)
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <utility>
+using namespace std;
+
+int main(void) {
+    int M, N;
+    vector<vector<int>> v;
+    cin >> M >> N;
+    v.push_back(vector<int>(N+2, -1));
+    for(int i=0; i<N; i++) {
+        vector<int> temp(1, -1);
+        int input;
+        for(int j=0; j<M; j++) {
+            cin >> input;
+            temp.push_back(input);
+        }
+        temp.push_back(-1);
+        v.push_back(temp);
+    }
+    v.push_back(vector<int>(N+2, -1));
+    queue<pair<int, int>> que;
+    for(int i=1; i<N+1; i++) {
+        for(int j=1; j<M+1; j++) {
+            if (v[i][j] == -1)
+                continue;
+
+            if(v[i-1][j] == -1 && v[i][j-1] == -1 && v[i+1][j] == -1 && v[i][j+1] == -1) {
+                if(v[i][j] == 0){
+                    cout << -1;
+                    return 0;
+                }
+            }
+            else if(v[i][j] == 1){
+                que.push(pair<int, int>(i,j));
+            }
+        }
+    }
+    int answer = -1;
+    do{
+        queue<pair<int, int>> subque;
+        while (!que.empty()) {
+            pair<int, int> t = que.front();
+            if (v[t.first][t.second+1] == 0) {
+                subque.push(pair<int, int>(t.first, t.second+1));
+                v[t.first][t.second+1] = 1;
+            }
+            if (v[t.first][t.second-1] == 0) {
+                subque.push(pair<int, int>(t.first, t.second-1));
+                v[t.first][t.second-1] = 1;
+            }
+            if (v[t.first+1][t.second] == 0) {
+                subque.push(pair<int, int>(t.first+1, t.second));
+                v[t.first+1][t.second] = 1;
+            }
+            if (v[t.first-1][t.second] == 0) {
+                subque.push(pair<int, int>(t.first-1, t.second));
+                v[t.first-1][t.second] = 1;
+            }
+            que.pop();
+        }
+        que = subque;
+        answer ++;
+    }while(!que.empty());
+    cout << answer << endl;
+    return 0;
+}
+
+OutOfBounds 에러가 발생함 vector배열에서 범위를 벗어나는건지 queue에서 벗어나는 것인지 확인해봐야 할 것같음
+
+#2차시도 (성공)
+#include <iostream>
+#include <vector>
+#include <utility>
+using namespace std;
+
+int main(void) {
+    int M, N;
+    vector<vector<int>> v;
+
+    cin >> M >> N;
+
+    v.push_back(vector<int>(M+2, -1));
+    for(int i=0; i<N; i++) {
+        vector<int> temp;
+        int input;
+        temp.push_back(-1);
+        for(int j=0; j<M; j++) {
+            cin >> input;
+            temp.push_back(input);
+        }
+        temp.push_back(-1);
+        v.push_back(temp);
+    }
+    v.push_back(vector<int>(M+2, -1));
+
+    vector<pair<int, int>> check;
+    for(int i=1; i<N+1; i++) {
+        for(int j=1; j<M+1; j++) {
+            if (v[i][j] == -1)
+                continue;
+
+            if(v[i-1][j] == -1 && v[i][j-1] == -1 && v[i+1][j] == -1 && v[i][j+1] == -1) {
+                if(v[i][j] == 0){
+                    cout << -1;
+                    return 0;
+                }
+            }
+            else if(v[i][j] == 1){
+                check.push_back(pair<int, int>(i,j));
+            }
+        }
+    }
+    int answer = -1;
+    do{
+        vector<pair<int, int>> sub;
+        for(auto k : check) {
+            pair<int, int> t = k;
+            if (v[t.first][t.second+1] == 0) {
+                sub.push_back(pair<int, int>(t.first, t.second+1));
+                v[t.first][t.second+1] = 1;
+            }
+            if (v[t.first][t.second-1] == 0) {
+                sub.push_back(pair<int, int>(t.first, t.second-1));
+                v[t.first][t.second-1] = 1;
+            }
+            if (v[t.first+1][t.second] == 0) {
+                sub.push_back(pair<int, int>(t.first+1, t.second));
+                v[t.first+1][t.second] = 1;
+            }
+            if (v[t.first-1][t.second] == 0) {
+                sub.push_back(pair<int, int>(t.first-1, t.second));
+                v[t.first-1][t.second] = 1;
+            }
+        }
+        check = sub;
+        answer ++;
+    }while(!check.empty());
+
+    for(int i=1; i<N+1; i++) {
+        for(int j=1; j<M+1; j++)
+        {
+            if(v[i][j]==0)
+            {
+                cout << -1;
+                return 0;
+            }
+        }
+    }
+    cout << answer << endl;
+    return 0;
+}
+
+처음 코드에서 데이터를 저장할때 테두리를 빈칸으로 세워둬서 배열의 상하좌우를 참조하기 쉬운 형태로
+만드는 작업을 진행 하려고 했는데 행과 열을 잘못 참조하여 배열의 범위를 벗어나는 에러가 발생했음을
+확인하여 수정하였으며, 토마토가 한칸에 존재하는데 그 칸의 주변칸이 모두 막혀있는 경우의 예외를
+마지막에 한번더 모든 칸에 토마토가 들어있는지 확인하는 과정을 추가함으로써 처리했다.
