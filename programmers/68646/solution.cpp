@@ -17,9 +17,7 @@ int solution(vector<int> a) {
     int lm, rm;
     lm = rm = 1000000000;
     int index = min(a, a.size());
-
     for(int i=0; i<index; i++) {
-        cout << a[i] << " ";
         if (a[i] < lm) {
             lm = a[i];
             answer ++;
