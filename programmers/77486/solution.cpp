@@ -34,7 +34,6 @@ vector<int> solution(vector<string> enroll,  vector<string> referral, vector<str
         }
         int cost = amount[i] * 100;
         while (target > 0) {
-            cout << cost * 0.9 << " " << cost * 0.1 << endl;
             if (cost * 0.1 <= 0) {
                 answer[target-1] += cost;
                 break;
@@ -44,7 +43,6 @@ vector<int> solution(vector<string> enroll,  vector<string> referral, vector<str
             cost = cost * 0.1;
             target = referral_i[target-1];
         }
-        cout << endl;
     }
 
     return answer;
