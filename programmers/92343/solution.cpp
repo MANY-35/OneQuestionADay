@@ -1,54 +1,53 @@
 #include <string>
 #include <vector>
-#include <queue>
 #include <iostream>
 using namespace std;
 
-double dfs(vector<int>& info, vector<vector<int>> &arr, int n, int t, vector<double> &val, double k) {
-    
-    if (!arr[n].size()) {
-        val[n] = k * ((!info[n])+1);
-        return val[n];
-    }
-        
 
-    double s = 0;
-    for(int i=0; i<arr[n].size(); i++)   
-        s += dfs(info, arr, arr[n][i], t, val, k*0.1);
-    s /= ((!info[n]) + 1);
-    val[n] = s;
-    return s;
+int Max = 0;
+void dfs(vector<vector<int>> &arr, vector<int> &info, int n, vector<int> SW) {
+
+    SW[info[n]]++;
+    if (SW[0] <= SW[1])
+        return;
+
+    cout << n << " : " << SW[0] << ", " << SW[1] << endl;
+
+    if (Max < SW[0])
+        Max = SW[0];
+
+    for(int i=0; i<arr[n].size(); i++) {
+        dfs(arr, info, arr[n][i], SW);
+    }
 }
+
 
 int solution(vector<int> info, vector<vector<int>> edges) {
-    int answer;
     vector<vector<int>> arr(info.size());
-    vector<double> data(info.size());
+
+    for(int i=0; i<edges.size(); i++) 
+        arr[edges[i][0]].push_back(edges[i][1]);
+    for(int i=0; i<arr.size(); i++) {
+        cout << i << " : ";
+        for(int j=0; j<arr[i].size(); j++)
+            cout << arr[i][j] << " ";
+        cout << endl;
+    }  
 
 
-    for (vector<int>t : edges)
-        arr[t[0]].push_back(t[1]);
- 
+    dfs(arr, info, 0, {0,0});
+    cout << Max << endl;
     
-    dfs(info, arr, 0, 0, data, 1);
-    
-
-    for(auto l : data) {
-        cout << l << " ";
-    }
-    cout << endl;
-    return answer;
 }
-
 int main(void) {
 
     vector<int> info = {
-        0,1,0,1,1,0,1,0,0,1,0
+        0,0,1,1,1,0,1,0,1,0,1,1
     };
     
     vector<vector<int>> edges = {
-        {0,1},{0,2},{1,3},{1,4},{2,5},{2,6},{3,7},{4,8},{6,9},{9,10}
+        {0,1},{1,2},{1,4},{0,8},{8,7},{9,10},{9,11},{4,3},{6,5},{4,6},{8,9}
     };
 
-    solution(info, edges);
+    cout << solution(info, edges) << endl;
 }

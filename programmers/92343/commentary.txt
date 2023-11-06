@@ -94,3 +94,88 @@ def solution(info, edges):
     return s
 우선순위에 여러가지 조건을 추가해보았는데 절반정도의 케이스에서 실패했으며
 무한루프에 빠지는 케이스가 존재했다.
+
+#3차시도 (실패)
+typedef struct Node {
+    int info;
+    int SW[2];
+    vector<struct Node*> arr;
+} node;
+
+node* dfs(node* n) {
+    if (n->arr.empty())
+        return n;
+    for(int i=0; i<n->arr.size(); i++) {
+        node* temp = dfs(n->arr[i]);
+        for(int j=0; j<2; j++) 
+            n->SW[j] += temp->SW[j];
+    }
+    return n;
+
+}
+
+int solution(vector<int> info, vector<vector<int>> edges) {
+    int answer;
+    vector<node> data;
+    for (int i=0; i<info.size(); i++) {
+        node temp;
+        temp.info = info[i];
+        temp.SW[info[i]] = 1;
+        temp.SW[!info[i]] = 0;
+        data.push_back(temp);
+    }
+    
+    for (int i=0; i<edges.size(); i++) 
+        data[edges[i][0]].arr.push_back(&data[edges[i][1]]);
+
+    dfs(&(data[0]));
+    int wolf = 0, sheep = 0;
+    deque<node*> que;
+    que.push_back(&data[0]);
+    while(!que.empty()) {
+        node* n = que.front();
+        que.pop_front();
+
+        if (n->info == 0) {
+            sheep ++;
+            for(int i=0; i<n->arr.size(); i++) {
+                if(n->arr[i]->info == 0)
+                    que.push_front(n->arr[i]);
+                else if(n->arr[i]->SW[0] > 0) {
+                    que.push_back(n->arr[i]);
+                }
+            }
+        }
+        else {
+            wolf++;
+            if (sheep <= wolf)
+                return sheep;
+
+            node* max = n;
+            for (int i=0; i<que.size(); i++) {
+                node* temp = que.front();
+                que.pop_front();
+                if (max->SW[0] <= temp->SW[0]) {
+                    if(max->SW[0] == temp->SW[0]) {
+                        if (max->SW[1] < temp->SW[1]) {
+                            que.push_back(temp);
+                            continue;
+                        }
+                    }
+                    que.push_back(max);
+                    max = temp;
+                } else 
+                    que.push_back(temp);
+            }
+            
+            for(int i=0; i<max->arr.size(); i++)
+                que.push_front(max->arr[i]);
+        }
+    }
+    return answer;
+}
+초심으로 돌아가 링크드 리스트 형식으로 트리를 구성하되, 각 서브 트리 가 가지는 늑대와 양의 갯수를
+구해서 저장한뒤 먼저 탐색할 노드의 우선순위를 주는 방식으로 코드를 작성해 봤다.
+하지만 절반 정도의 케이스에서 실패했다.
+
+5 8 11 12 13 14 17
