@@ -178,4 +178,48 @@ int solution(vector<int> info, vector<vector<int>> edges) {
 구해서 저장한뒤 먼저 탐색할 노드의 우선순위를 주는 방식으로 코드를 작성해 봤다.
 하지만 절반 정도의 케이스에서 실패했다.
 
-5 8 11 12 13 14 17
+#4차시도 (성공)
+int func(vector<int> &info, vector<vector<int>> &arr, int n, int state, bool vist[], int max) {
+    if(vist[state])
+        return max;
+
+    vist[state] = true;
+    int wolf = 0;
+    for(int i=0, s=1; (s<<i)<=state; i++) {
+        if(state&(s<<i) && info[i])
+            wolf++;
+        if (wolf * 2 >= n)
+            return max; 
+    }
+
+    if (n-wolf > max) 
+        max = n - wolf;
+
+    for(int i=0, s=1; (s<<i)<=state; i++) {
+        if(state & (s<<i)) {
+            for (int j=0; j<arr[i].size(); j++) {
+                if (!(state & (1<<arr[i][j]))) {
+                    int t = func(info, arr, n+1, state+(1<<(arr[i][j])), vist, max);
+                    if (t > max)
+                        max = t;
+                }
+            }
+        }
+    }
+    return max;
+}
+
+int solution(vector<int> info, vector<vector<int>> edges) {
+    vector<vector<int>> arr(info.size());
+
+    bool vist[1<<17] = {false,};
+
+    for(int i=0; i<edges.size(); i++) 
+        arr[edges[i][0]].push_back(edges[i][1]);
+
+    return func(info, arr, 1, 1, vist, 0);   
+}
+
+도저히 풀리지 않아 누군가 올린 답을 보고 풀어봤다.
+코드의 요점은 bitmask로 모든 노드의 번호를 bit의 자릿수로 치환하여 계산하도록 했으며,
+방문한 노드들의 집합(= 10진수의 값)을 vist배열에 저장함으로써 모든 경우의 수를 판단할 수 있게된다.

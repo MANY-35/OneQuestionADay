@@ -4,39 +4,47 @@
 using namespace std;
 
 
-int Max = 0;
-void dfs(vector<vector<int>> &arr, vector<int> &info, int n, vector<int> SW) {
+int func(vector<int> &info, vector<vector<int>> &arr, int n, int state, bool vist[], int max) {
+    if(vist[state])
+        return max;
 
-    SW[info[n]]++;
-    if (SW[0] <= SW[1])
-        return;
-
-    cout << n << " : " << SW[0] << ", " << SW[1] << endl;
-
-    if (Max < SW[0])
-        Max = SW[0];
-
-    for(int i=0; i<arr[n].size(); i++) {
-        dfs(arr, info, arr[n][i], SW);
+    vist[state] = true;
+    
+    int wolf = 0;
+    for(int i=0, s=1; (s<<i)<=state; i++) {
+        if(state&(s<<i) && info[i])
+            wolf++;
+        if (wolf * 2 >= n)
+            return max; 
     }
+
+    if (n-wolf > max) 
+        max = n - wolf;
+
+    for(int i=0, s=1; (s<<i)<=state; i++) {
+        if(state & (s<<i)) {
+            for (int j=0; j<arr[i].size(); j++) {
+                if (!(state & (1<<arr[i][j]))) {
+                    int t = func(info, arr, n+1, state+(1<<(arr[i][j])), vist, max);
+                    if (t > max)
+                        max = t;
+                }
+            }
+        }
+    }
+    return max;
 }
 
 
 int solution(vector<int> info, vector<vector<int>> edges) {
     vector<vector<int>> arr(info.size());
 
+    bool vist[1<<17] = {false,};
+
     for(int i=0; i<edges.size(); i++) 
         arr[edges[i][0]].push_back(edges[i][1]);
-    for(int i=0; i<arr.size(); i++) {
-        cout << i << " : ";
-        for(int j=0; j<arr[i].size(); j++)
-            cout << arr[i][j] << " ";
-        cout << endl;
-    }  
 
-
-    dfs(arr, info, 0, {0,0});
-    cout << Max << endl;
+    return func(info, arr, 1, 1, vist, 0);
     
 }
 int main(void) {
@@ -50,4 +58,5 @@ int main(void) {
     };
 
     cout << solution(info, edges) << endl;
+
 }
