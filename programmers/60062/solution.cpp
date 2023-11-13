@@ -2,78 +2,95 @@
 #include <vector>
 #include <iostream>
 #include <queue>
+#include <algorithm>
 using namespace std;
 
-int func(int n, deque<int> weak, vector<int> dist) {
-    
-    if (weak.empty())
-        return 1;
+int answer = 20;
+void func(int n, deque<int> weak, vector<int> dist, int deep) {
+    if (deep >= answer)
+        return;
     if (dist.empty())
-        return -1;
+        return;
 
-
-    int d = dist.back();
-    dist.pop_back();
-    for(int i=0; i<weak.size(); i++) {
-        int w = weak.front();
-        weak.pop_front();
-        cout << w << " " << d << endl;
-        deque<int> cash;
-        cash.push_back(w);
-        while (d+w >= weak.front() || (d+w)%n >= weak.front())
-        {
-            cash.push_front(weak.front());
-            weak.pop_front();
-        }
-
-        cout << "number : ";
-        for(int l=0; l<weak.size(); l++)
-            cout << weak[l] << " ";
-        cout << endl;
-
-        cout << "cash : ";
-        for (int l : cash) {
-            cout << l << " ";
-        }
-        cout << endl;
+    if (weak.empty()) {
+        answer = deep;
+        cout << "deep = " << deep << " answer = " << answer << endl;
+        return;
+    }
+    
         
-        func(n, weak, dist);
+    for (int i=0; i<weak.size(); i++) {
+        int p = weak.front();
+        weak.pop_front();
+        int d = dist.back();
+        dist.pop_back();
+    
+        cout << d << " : (" << p << " ~ "<< p+d << ") = [" << p << " ";
 
-        cout << "end func" << endl;
-        for (int k : cash) {
-            weak.push_back(k);
+        vector<int> temp;
+        int c = p+d;
+        
+        while(!weak.empty()) {
+            if (c < n) {
+                if(p <= weak.front() && weak.front() <= c) {
+                    cout << weak.front() << " ";
+                    temp.push_back(weak.front());
+                    weak.pop_front();
+                }
+                else
+                    break;
+            }
+            else {
+                if(p <= weak.front() || weak.front() <= c%n) {
+                    cout << weak.front() << " ";
+                    temp.push_back(weak.front());
+                    weak.pop_front();
+                }
+                else
+                    break;
+            }
         }
-        for (int l : weak) {
-            cout << l << " ";
+        cout << "]" << endl << "in que : ";
+        for(int k : weak) {
+            cout << k << " ";
         }
+        cout << endl;
 
+        func(n, weak, dist, deep+1);
+        while(!temp.empty()) {
+            weak.push_front(temp.back());
+            temp.pop_back();
+        }
+        weak.push_back(p);
+        dist.push_back(d);
         cout << endl;
     }
-    return 1;
 }
 
 int solution(int n, vector<int> weak, vector<int> dist) {
-    int answer = 0;
-
     deque<int> temp;
 
     for(int i=0; i<weak.size(); i++)
         temp.push_back(weak[i]);
+    sort(dist.begin(), dist.end());
 
-    cout << func(n, temp, dist) << endl;
+    func(n, temp, dist, 0);
 
-    return answer;
+    if(answer == 20)
+        return -1;
+    else
+        return answer;
 }
 
 int main(void) {
-    int n = 12;
+    int n = 200;
     vector<int> weak = {
-        1, 5, 6, 10
+        0, 10, 50, 80, 120, 160
     };
     vector<int> dist = {
-        1, 2, 3, 4
+        1, 10, 5, 40, 30
     };
 
-    solution(n, weak, dist);
+    cout << solution(n, weak, dist) << endl;
 
 }
