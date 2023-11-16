@@ -79,3 +79,43 @@ vector<string> solution(vector<string> s) {
 주어진 문자열에서 가능한 모든 110의 갯수를 구한뒤 제거해주고 남은 문자열에서 뒤에서부터 0을 만나는 시점에
 모든 110을 더해주는 방식으로 수정했다.
 하지만 단 한개의 케이스에서 실패했다. 어떤 예외가 발생한건지 고민해봐야 할 것 같다.
+
+#3차시도 (성공)
+vector<string> solution(vector<string> s) {
+    vector<string> answer;
+    for (string str : s) {
+        vector<char> stack = {str[0]};
+        int count = 0, s_i =0;
+        for (int i=1; i<str.size(); i++) {
+            if(s_i < 1) {
+                stack.push_back(str[i]);
+                s_i++;
+            } else {
+                if (stack[s_i-1] == '1' && stack[s_i] == '1' && str[i] == '0') {
+                    count++;
+                    stack.pop_back();
+                    stack.pop_back();
+                    s_i -= 2;
+                } else {
+                    stack.push_back(str[i]);
+                    s_i++;
+                }
+            }
+        }
+        int index;
+        for(index=stack.size()-1; index>=0; index--) {
+            if (stack[index] == '0')
+                break;
+        }
+        string left(stack.begin(), stack.begin()+index+1);
+        string right(stack.begin()+index+1, stack.end());
+        for(int j=0; j<count; j++)
+            left += "110";
+        left += right;
+        answer.push_back(left);
+    }
+    return answer;
+}
+
+아주 미련하게 last = str[1] 이라는 당연하게 한 글자로 이루어진 문자열을 고려하지 않았다.
+작업하던 vscode에서 자연스럽게 출력이 되서 전혀 이상함을 못 느꼇다.

@@ -1,0 +1,82 @@
+int abs(int a) {
+    if (a > 0)
+        return a;
+    return -a;
+}
+string solution(int n, int m, int x, int y, int r, int c, int k) {
+    string answer = "";
+    int ud = 0, lr = 0;
+    ud = r - x;
+    lr = c - y;
+    int sum = abs(ud) + abs(lr);
+    if (sum > k || (k-sum)%2 != 0)
+        return "impossible";
+
+    while (x < r) {
+        answer += "d";
+        x++;
+        k--;
+    }
+    while (y > c) {
+        answer += "l";
+        y--;
+        k--;
+    }
+    while (y < c) {
+        answer += "r";
+        y++;
+        k--;
+    }
+    while (x > r) {
+        answer += "u";
+        x--;
+        k--;
+    }
+    if (k == 0)
+        return answer;
+    bool rr, ll, uu, dd;
+    rr = ll = uu = dd = false;
+    if (x < n)
+        dd = true;
+    if (x > 1)
+        uu = true;
+    if (y < m)
+        rr = true;
+    if (y > 1)
+        ll = true;
+    while(k >= 4) {
+        if(dd) {
+            if (ll)
+                answer += "dlru";
+            else if(rr)
+                answer += "drul";
+            else
+                answer += "dudu";
+        }
+        else if(ll)
+            answer += "lrlr";
+        else if(rr)  
+            answer += "rlrl";
+        k-=4;
+    }
+    if (k > 0) {
+        if(dd)
+            answer += "du";
+        else if(ll)
+            answer += "lr";
+        else if(rr)
+            answer += "rl";
+        else 
+            answer += "ud";
+    }
+    return answer;
+}
+
+이동횟수가 주어지기 때문에 이동횟수를 가지고 탈출할 수 있는지 먼저 판단할 수 있다.
+그후 미로를 탈출할 때 주어진 우선순위가 존재하기 때문에 순서대로 탈출구까지 이동 시킨 후
+그다음 남은 이동횟수를 소진시키면 된다고 생각했다.
+그 과정에서 경우의 수를 생각하여 이동을 시켰다고 생각했는데
+3개의 케이스말고는 전부 오답이였다. 아무래도 불가능한 경우만 정답처리 된 것으로 보인다.
+
+다시 생각해보니 지금같은 코드에선 목적지에서 아래 2칸과 왼쪽2칸이 비어있어도 dlru 순으로 움직이는데
+dduu 가 맞는 움직임이다.

@@ -12,9 +12,10 @@ vector<string> solution(vector<string> s) {
         vector<char> stack = {str[0]};
         int count = 0, s_i =0;
         for (int i=1; i<str.size(); i++) {
-            if(s_i < 1)
+            if(s_i < 1) {
                 stack.push_back(str[i]);
-            else {
+                s_i ++;
+            } else {
             
                 if (stack[s_i-1] == '1' && stack[s_i] == '1' && str[i] == '0') {
                     count++;
