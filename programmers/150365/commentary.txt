@@ -1,3 +1,6 @@
+#LV3 미로 탈출 명령어
+
+#1차시도 (실패)
 int abs(int a) {
     if (a > 0)
         return a;
@@ -80,3 +83,61 @@ string solution(int n, int m, int x, int y, int r, int c, int k) {
 
 다시 생각해보니 지금같은 코드에선 목적지에서 아래 2칸과 왼쪽2칸이 비어있어도 dlru 순으로 움직이는데
 dduu 가 맞는 움직임이다.
+
+#2차시도 (성공)
+int dis(int x, int y, int r, int c) {
+    return ((c > y) ? c-y : y-c) + ((r > x) ? r-x : x-r);
+}
+string solution(int n, int m, int x, int y, int r, int c, int k) {
+    string answer = "";
+    int sum = dis(x, y, r, c);
+    
+    cout << sum << endl;
+
+    if (sum > k || (k-sum)%2 != 0)
+        return "impossible";
+    
+
+    while(x < n && k >= dis(x,y,r,c)) {
+        answer += "d";
+        k--;
+        x++;
+    }
+    while(k >= dis(x,y,r,c) && k > 0) {
+        if(y > 1) {
+            answer += "l";
+            y--;
+        }
+        else { 
+            answer += "r";
+            y++;
+        }
+        k--;
+    }
+
+    while (x < r) {
+        answer += "d";
+        x++;
+    }
+    while (y > c) {
+        answer += "l";
+        y--;
+    }
+    while (y < c) {
+        answer += "r";
+        y++;
+    }
+    while (x > r) {
+        answer += "u";
+        x--;
+    }
+
+    return answer;
+}
+
+이전코드에서 현재 위치에서 탈출 지점까지의 거리와 이동 가능한 횟수를 바탕으로 아래로 내려갈 수 있는
+만큼 내려간 후 마찬가지로 다른 방향으로도 움직여주면 되는 문제였다.
+
+풀고나서 다른 사람의 풀이를 보니 내 코드가 조금 더럽다고 느껴졋다.
+나는 움직이는 만큼 미리 다 움직이고 탈출지점 까지 움직이는 방식으로 풀었는데
+처음부터 조건문을 통해 거리와 횟수를 바탕으로 하나의 반복문으로 해결할 수 있었다.
