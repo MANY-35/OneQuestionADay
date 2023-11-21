@@ -6,41 +6,37 @@ using namespace std;
 
 
 int checking(string str, int len) {
-    
     if(len == 1)
         return str[0] - '0';
     
-    else {
-        cout << "len = " << len << endl;
-        string left = "";
-        for(int i=0; i<len/2; i++)
-            left += str[i];
+    cout << "len = " << len << endl;
+    string left = "";
+    for(int i=0; i<len/2; i++)
+        left += str[i];
         
-        string right = "";
-        for(int i=(len/2)+1; i<len; i++)
-            right += str[i];
+    string right = "";
+    for(int i=(len/2)+1; i<len; i++)
+        right += str[i];
         
-        cout << left << " in left" << endl;
-        int l = checking(left, len/2);
-        cout << l << " ";
-        if(l < 0)
-            return -1;
+    cout << left << " in left" << endl;
+    int l = checking(left, len/2);
+    cout << l << " ";
+    if(l < 0)
+        return -1;
          
-        cout << right << " in right" << endl;
-        int r = checking(right, len/2);
-        if(r < 0)
+    cout << right << " in right" << endl;
+    int r = checking(right, len/2);
+    if(r < 0)
+        return -1;
+
+
+    if(str[len/2]=='0') {
+        if(r + l > 0)
             return -1;
-
-
-        if(str[len/2]=='0') {
-            if(r + l > 0)
-                return -1;
-            else
-                return 0;
-        }
         else
-            return 1;
+            return 0;
     }
+    return 1;
 }
 vector<int> solution(vector<long long> numbers) {
     vector<int> answer;
