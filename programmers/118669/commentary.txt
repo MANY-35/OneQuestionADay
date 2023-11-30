@@ -1,88 +1,123 @@
-#LV3 연속 펄스 부분 수열의 합
+#LV3 등산코스 정하기
 
 #1차시도 (실패)
-long long solution(vector<int> sequence) {
-    int len = sequence.size();
-    long long a1, a2;
-    long long max = 0;
-    for (int i=0; i<len-1; i++){
-        a1 = a2 = 0;
-        int flag = 1;
-        for (int j=i; j<len; j++) {
-            a1 += sequence[j] * flag;
-            a2 += sequence[j] * (-flag);
-            if (a1 > max) {
-                max = a1;
+
+#define my_priority_data pair<int, int>, vector<pair<int, int>>, cmp
+struct cmp {
+    bool operator()(pair<int, int>a, pair<int, int>b) {
+        return a.second > b.second;
+    }
+};
+
+int func(vector<priority_queue<my_priority_data>> &arr, int n, int e, int m, priority_queue<my_priority_data> que, bool vist[]) {
+    if (n == e)
+        return m;
+
+    if (vist[n])
+        return 0;
+
+    vist[n] = true;
+    while(!que.empty()) {
+        pair<int, int> p = que.top();
+        cout << p.first << " " << m  << " " << p.second << endl;
+        int re = func(arr, p.first, e, max(m, p.second), arr[p.first], vist);
+        if(re)
+            return re;
+        vist[p.first] = false;
+        que.pop();
+    }
+    return 0;
+}
+
+vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
+    vector<priority_queue<my_priority_data>> arr(n+1);
+    for (vector<int> path : paths) {
+        arr[path[0]].push(make_pair(path[1], path[2]));
+        arr[path[1]].push(make_pair(path[0], path[2]));
+    }
+
+    for (int summit : summits)
+        arr[summit] = priority_queue<my_priority_data>();
+    
+    vector<int> m = {0, 10000000};
+    for (int summit : summits) {
+        for(int gate : gates) {
+            bool *vist = new bool[n+1];
+            fill_n(vist, n+1, false);
+            int k = func(arr, gate, summit, 0, arr[gate], vist);
+            cout << k << endl;
+            if(m[1] > k) {
+                m[0] = summit;
+                m[1] = k;
             }
-            if (a2 > max) {
-                max = a2;
-            } 
-            flag = -flag;
         }
     }
-    return max;
+    return m;
 }
-단순하게 생각해서 길이가 50만 이기 때문에 O(n^2) 정도여도 할만하다고 생각하여
-순열을 완전탐색 하여 1과 -1 로 시작하는 두 펄스 수열을 동시에 계산해가면서 큰값을 저장하는
-방식으로 작성했으나 하나의 케이스에서 실패햇으며
-(아마 첫 반복문을 len-1 로 하여 시간을 조금이나마 줄여보려 했으나 배열의 길이가 1일경우 문제가 생기는것 같다)
-4개의 케이스에서 시간이 초과가 발생했다.
+
+가장 짧은 길로 계속해서 선택해 나가면 가능할 줄 알았으나 아주 잘못 된 방식이었다.
 
 #2차시도 (실패)
-long long solution(vector<int> sequence) {
-    long long answer = 0;
-    int len = sequence.size();
-    vector<long long> arr(len);
-
-    arr[0] = sequence[0];
-    for(int i=1, flag=-1; i<len; i++) {
-        if (arr[i-1] + sequence[i]*flag < sequence[i]) {
-            flag = -1;
-            arr[i] = sequence[i];
-        } else {
-            arr[i] = arr[i-1] + sequence[i]*flag;
-            flag = -flag;
-        }
-        if (arr[i] > answer)
-            answer = arr[i];
+struct cmp {
+    bool operator()(vector<int> a, vector<int> b) {
+        if (a[2] == b[2])
+            return a[1] > b[1];
+        return a[2] > b[2];
     }
-    return answer;
+};
+int func(vector<vector<int>> &arr, priority_queue<vector<int>, vector<vector<int>>, cmp> &que, vector<int> &summits, vector<int> &link) {
+    while(!que.empty()) {
+        vector<int> top = que.top();
+        que.pop();
+
+        link[top[1]] = top[0];
+        for(int summit : summits) {
+            if (top[1] == summit)
+                return summit;
+        }
+        
+        for(int i=1; i<arr[top[1]].size(); i++) {
+            if(arr[top[1]][i] == 0)
+                continue;
+
+            if(!link[i])
+                que.push({top[1], i, arr[top[1]][i]});
+        }
+    }
+    return -1;
 }
-시간을 줄이고자 DP알고리즘을 응용하여 코드를 작성해 보았으나 뭔가 잘못 설계한것 같다.
-대부분의 케이스에서 실패했다.
 
-#3차시도 (성공)
-long long solution(vector<int> sequence) {
-    long long answer = 0;
-    int len = sequence.size();
-
-    if (len == 1)
-        return (sequence[0] > 0 ? sequence[0] : -sequence[0]);
-
-    vector<int> t(len);
-    vector<long long> arr(len);
+vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
+    vector<vector<int>> arr(n+1, vector<int>(n+1, 0));
+    for (vector<int> path : paths) {
+        arr[path[0]][path[1]] = path[2];
+        arr[path[1]][path[0]] = path[2];
+    }
+    vector<int> link(n+1, 0);
+    priority_queue<vector<int>, vector<vector<int>>, cmp> que;
+    for(int gate : gates) {
+        link[gate] = -1;
+        for(int i=1; i<arr[gate].size(); i++) {
+            if(arr[gate][i] != 0)
+                que.push({gate, i, arr[gate][i]});
+        }
+    }
     
-    for(int i=0, flag=1; i<len; i++) {
-        t[i] = sequence[i] * flag;
-        flag = -flag;
-    }
 
-    for (int flag : {1, -1}) {
-        arr[0] = t[0] * flag;
-        int index = 0;
-        for(int i=1; i<len; i++) {
-            if (arr[i-1] + (t[i] * flag) < (t[i]*flag)) {
-                arr[i] = (t[i] * flag);
-            } else {
-                arr[i] = arr[i-1] + (t[i] * flag);
-            }   
-            if (arr[i] > answer)
-                answer = arr[i];
-        }
+    vector<int> answer;
+    int l = func(arr, que, summits, link);
+    int r = 0;
+    answer.push_back(l);
+    while(link[l] != -1) {
+        if(r < arr[l][link[l]])
+            r = arr[l][link[l]];
+        l = link[l];
     }
+    answer.push_back(r);
     return answer;
 }
-DP알고리즘을 응용하여 부분배열의 최대값을 구하는 과정으로 두번 수행해서 값을 구할 수 있었다.
 
-다른 사람들의 풀이를 보니 좀더 간한하고, 한번의 반복문을 이용하여 풀 수 있는 방식이 있다는 것을
-보았다. 좀 더 깔끔하게 코드를 작성하는 연습을 해야겠다.
+비슷한 방식으로 우선순위 큐에 가장 짧은 길 부터 그려나가면서 현재 노드가 어디에서 왓는지 저장한다.
+그러다가 산정상과 만나면 바로 함수를 종료하고 만난 정상을 알려주고
+알아낸 산 정상부터 현재 노드가 정상에 도착할때 만난 노드들을 검사해 나가면서 가장 큰 길의 값을 알아내는
+방식으로 해결해 보려 했으나 한개의 실패와 5개의 시간초과가 발생했다.
