@@ -14,95 +14,72 @@ struct cmp {
         return a[2] > b[2];
     }
 };
-int func(vector<vector<int>> &arr, priority_queue<vector<int>, vector<vector<int>>, cmp> &que, vector<int> &summits, vector<int> &link) {
+vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
+    vector<vector<pair<int, int>>> arr(n+1);
+    for (vector<int> path : paths) {
+        arr[path[0]].push_back({path[1], path[2]});
+        arr[path[1]].push_back({path[0], path[2]});
+    }
+    for(int summit : summits)
+        arr[summit] = {};
+
+    vector<pair<int, int>> link(n+1, {0, 0});
+    priority_queue<vector<int>, vector<vector<int>>, cmp> que;
+    for(int gate : gates) {
+        link[gate].first = -1;
+        for(pair<int, int> a : arr[gate])
+            que.push({gate, a.first, a.second});
+    }
+
     while(!que.empty()) {
         vector<int> top = que.top();
         que.pop();
 
-        link[top[1]] = top[0];
-        for(int summit : summits) {
-            if (top[1] == summit)
-                return summit;
-        }
-        
-        for(int i=1; i<arr[top[1]].size(); i++) {
-            if(!arr[top[1]][i])
-                continue;
-
-            if(!link[i])
-                que.push({top[1], i, arr[top[1]][i]});
+        if(link[top[1]].second)
+            continue;    
+        link[top[1]] = {top[0], top[2]};
+        for (pair<int, int> i : arr[top[1]]) {
+            if(!link[i.first].first)
+                que.push({top[1], i.first, i.second});
         }
     }
-    return -1;
-}
 
-vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector<int> summits) {
-    vector<vector<int>> arr(n+1, vector<int>(n+1, 0));
-    for (vector<int> path : paths) {
-        arr[path[0]][path[1]] = path[2];
-        arr[path[1]][path[0]] = path[2];
-    }
+    priority_queue<vector<int>, vector<vector<int>>, cmp> answer;
+    for(int summit : summits) {
+        int t = link[summit].first;
+        int m = link[summit].second;
 
-    for(int gate : gates) {
-        for(int i=0; i<arr.size(); i++) {
-            arr[i][gate] = 0;
+        while(t != -1 && t!=0) {
+            if(link[t].second > m)
+                m = link[t].second;
+            t = link[t].first;
         }
+        if(t!=0)
+            answer.push({0, summit, m});   
     }
-    for(int summit : summits)
-        arr[summit] = vector<int>(n+1, 0);
-
-    for(auto i : arr) {
-        for (auto j : i)
-            cout << j << " ";
-        cout << endl;
-    }   
-
-    sort(summits.begin(), summits.end());
-
-    vector<int> link(n+1, 0);
-    priority_queue<vector<int>, vector<vector<int>>, cmp> que;
-    for(int gate : gates) {
-        link[gate] = -1;
-        for(int i=1; i<arr[gate].size(); i++) {
-            if(arr[gate][i] != 0)
-                que.push({gate, i, arr[gate][i]});
-        }
-    }
-    
-    vector<int> answer;
-    int l = func(arr, que, summits, link);
-    int r = 0;
-    answer.push_back(l);
-    while(link[l] != -1) {
-        if(r < arr[link[l]][l])
-            r = arr[link[l]][l];
-        l = link[l];
-    }
-    answer.push_back(r);
-    cout << answer[0] << " " << answer[1] << endl;
-
-    return answer;
+    return {answer.top()[1], answer.top()[2]};
 }
 
 int main(void) {
-    int n = 7;
+    int n = 6;
 
     vector<vector<int>> paths = {
-        {1, 6, 1},
-        {1, 4, 1},
-        {6, 7, 1},
-        {6, 2, 1},
-        {4, 5, 1},
-        {5, 2, 1},
-        {2, 3, 1}
+        {1, 2, 3},
+        {2, 3, 5},
+        {2, 4, 2},
+        {2, 5, 4},
+        {3, 4, 4},
+        {4, 5, 3},
+        {4, 6, 1},
+        {5, 6, 1}
     };
 
     vector<int> gates = {
-        {3, 7}
+        {1, 3}
     };
 
     vector<int> summits = {
-        {1, 5}
+        {5}
     };
     
     auto answer = solution(n, paths, gates, summits);
