@@ -1,0 +1,41 @@
+#실버3 피보나치 함수
+
+#1차시도 (성공)
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int main(void) {
+    int max = 0;
+    vector<int> arr;
+    
+    int TC;
+    cin >> TC;
+    while(TC--) {
+        int n;
+        cin >> n;
+
+        if(n > max)
+            max = n;
+
+        arr.push_back(n);
+    }
+    int DP0[41] = {0,};
+    int DP1[41] = {0,};
+    DP0[0] = 1;
+    DP1[1] = 1;
+
+    for(int i=2; i<=max; i++) {
+        DP1[i] = DP1[i-1] + DP1[i-2];
+        DP0[i] = DP0[i-1] + DP0[i-2];
+    }
+
+    for(auto k : arr)
+        cout << DP0[k] << " " << DP1[k] << endl;
+    return 0;
+}
+
+직접 피보나치를 재귀로 돌려서하면 N의 최대값이 40이기때문에 재귀가 너무 많이 발생하여
+불가능하다고 판단하여 고민하다 DP를 이용하여 풀면 될 것 같았다.
+또한 미리 40까지의 값을 구한후 정답을 출력하는 방식도 있었지만 조금 더 시간을
+줄이기 위해 입력 값 중 가장 큰 값까지만 계산한 후 출력하도록 작성했다.
