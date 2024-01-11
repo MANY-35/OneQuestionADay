@@ -1,220 +1,114 @@
-#골드5 AC
+#골드3 ACM Craft
 
-#1차시도 (실패)
+#1차시도(실패)
 #include<iostream>
-#include<sstream>
 #include<vector>
 using namespace std;
 
-vector<string> split(string input, char delimiter);
+void dfs(vector<vector<int>> &arr, int now, int cost, int &max, vector<int> &times) {
+    if(arr[now].empty()) {
+        if(cost > max)
+            max = cost;
+        return;
+    }
+    for(auto i : arr[now]) 
+        dfs(arr, i, cost+times[i], max, times);
+}
 
 int main(void) {
-    int tc;
-    string command;
-    string input;
-    int len;
-    vector<string> answer;
-
-    cin >> tc;
-    for(int i=0; i<tc; i++) {
-        cin >> command;
-        cin >> len;
-        cin >> input;
-        vector<string> arr = split(input, ',');
-
-        if(arr.size() < 2){ 
-            answer.push_back("error");
-            continue;
+    vector<int> answer;
+    int TC;
+    cin >> TC;
+    while(TC--) {
+        int N, K;
+        cin >> N >> K;
+        vector<int> times;
+        for(int i=0, input; i<N; i++) {
+            cin >> input;
+            times.push_back(input);
         }
-        arr[0] = arr[0][1];
-        arr[len-1] = arr[len-1][0];
-        int start = 0;
-        int end = len-1;
-        int re = 1;
-        for(int c=0; c<command.length(); c++) {
-            if(command[c] == 'R'){
-                re *= -1;
-                int t = start;
-                start = end;
-                end = t;
-            }
-            else {
-                len -= 1;
-                start += re;
-            }
-            if (len <= 0)
-                break;
-       }
-        if (len <= 0){
-            answer.push_back("error");
-            continue;
-        }
-        
-        string t = "[";
-        for (int j=start; j!=end; j+=re) {
-            t += arr[j]+ ",";
-        }
-        t+= arr[end] + "]";
-        answer.push_back(t);
+        vector<vector<int>> arr(N, vector<int>());
+        for(int i=0; i<K; i++) {
+            int x, y;
+            cin >> x >> y;
+            arr[y-1].push_back(x-1);
+        } 
+        int W;
+        cin >> W;
+        W--;
+        int max = 0;
+        dfs(arr, W, times[W], max, times);
+        answer.push_back(max);
     }
-    for(int i=0; i<answer.size(); i++){
-        cout << answer[i] << endl;
-    }
-}
-vector<string> split(string input, char delimiter) {
-    vector<string> answer;
-    stringstream ss(input);
-    string temp;
-    while (getline(ss, temp, delimiter)) {
-        answer.push_back(temp);
-    }
-    return answer;
+    for(auto i : answer)
+        cout << i << endl;
+    return 0;
 }
 
-테스트 케이스는 모두 성공했으나 채점 결과는 실패였다.
-1개만 출력되는 케이스를 살펴봐야 할 것같다.
+깊이우선 탐색을 이용하여 종점까지 가장 오래걸리는 시간이 정답이라고 판단하여 코드를 작성했으나
+시간초과가 발생했다.
 
 #2차시도 (실패)
 #include<iostream>
-#include<sstream>
 #include<vector>
+#include<queue>
 using namespace std;
 
-vector<string> split(string input, char delimiter);
+int func(vector<vector<int>> &arr, vector<int>times, int start, int len) {
+    priority_queue<pair<int, int>> que;
+    vector<int> dist (len, 0);
+    que.emplace(times[start], start);
+    dist[start] = times[start];
+    int max = dist[start];
+    while(!que.empty()) {
+        int cost = que.top().first;
+        int dest = que.top().second;
+        que.pop();
 
-int main(void) {
-    int tc;
-    string command;
-    string input;
-    int len;
-    vector<string> answer;
+        for(int i=0; i<arr[dest].size(); i++) {
+            int next = arr[dest][i];
+            int nCost = times[arr[dest][i]];
 
-    cin >> tc;
-    for(int i=0; i<tc; i++) {
-        cin >> command;
-        cin >> len;
-        cin >> input;
+            if(dist[next] < cost + nCost) {
+                dist[next] = cost + nCost;
+                que.emplace(dist[next], next);
+            }
 
-        vector<string> arr = split(input, ',');
-        if (len > 0) {
-            arr[0] = arr[0][1];
-            arr[len-1] = arr[len-1][0];
-        }
-        else {
-            arr = vector<string>(0);
-        }
-        int start = 0;
-        int end = len-1;
-        int re = 1;
-        for(int c=0; c<command.length(); c++) {
-            if(command[c] == 'R'){
-                re *= -1;
-                int t = start;
-                start = end;
-                end = t;
-            }
-            else {
-                len -= 1;
-                start += re;
-            }
-            if (len < 0)
-                break;
-        }
-        if (len < 0){
-            answer.push_back("error");
-        }
-        else if(len == 0){
-            answer.push_back("[]");
-        }
-        else {
-            string t = "[";
-            for (int j=start; j!=end; j+=re) {
-                t += arr[j]+ ",";
-            }
-            t+= arr[end] + "]";
-            answer.push_back(t);
+            if(dist[next] > max)
+                max = dist[next];
         }
     }
-    for(int i=0; i<answer.size(); i++){
-        cout << answer[i] << endl;
-    }
+    return max;
 }
-vector<string> split(string input, char delimiter) {
-    vector<string> answer;
-    stringstream ss(input);
-    string temp;
-    while (getline(ss, temp, delimiter)) {
-        answer.push_back(temp);
-    }
-    return answer;
-}
-배열의 개수가 0일때의 예외 처리와 []의 배열을 출력하는 예외처리도 진행했다.
-하지만 여전히 실패한다. 
-
-#3차시도 (성공)
-#include<iostream>
-#include<vector>
-using namespace std;
-
 int main(void) {
-    int tc;
-    vector<string> answer;
-    
-    cin >> tc;
-    while (tc--) {
-        string cmd;
-        cin >> cmd;
-        
-        int len;
-        cin >> len;
-
-        string t;
-        cin >> t;
-
-        vector<string> arr;
-        string temp = "";
-        for(int i=1; i<t.length(); i++){
-            if (t[i] != ',' && t[i]!=']')
-                temp += t[i];
-            else{
-                arr.push_back(temp);
-                temp = "";
-            }
+    vector<int> answer;
+    int TC;
+    cin >> TC;
+    while(TC--) {
+        int N, K;
+        cin >> N >> K;
+        vector<int> times;
+        for(int i=0, input; i<N; i++) {
+            cin >> input;
+            times.push_back(input);
         }
-        int re = 1;
-        int s = 0;
-        int e = len-1;
-
-        for(char c : cmd){
-            if (c == 'R') {
-                re *= -1;
-                int t = s;
-                s = e;
-                e = t;
-            }
-            else {
-                len -= 1;
-                s += re;
-            }
-            if (len < 0)
-                break;
-        }
-        if (len < 0)
-            answer.push_back("error");
-        else if(len == 0)
-            answer.push_back("[]");
-        else {
-            string t= "[";
-            for(int i=s; i!=e; i+=re){
-                t += arr[i] + ",";
-            }
-            t += arr[e] + "]";
-            answer.push_back(t);
-        }
+        vector<vector<int>> arr(N, vector<int>());
+        for(int i=0; i<K; i++) {
+            int x, y;
+            cin >> x >> y;
+            arr[y-1].push_back(x-1);
+        } 
+        int W;
+        cin >> W;
+        W--;
+        int an = func(arr, times, W, N);
+        answer.push_back(an);
     }
-    for (auto k : answer)
-        cout << k <<endl;
+    for(auto i : answer)
+        cout << i << endl;
     return 0;
 }
-이전 코드가 다소 불필요한 함수와 작업을 하는 것 같아 대폭 수정하였으며
-이전 코드에서 spilt 하는 과정에서 문제가 있었던 것 같음.
+
+시간을 줄이기 위해 우선순위큐를 이용한 다익스트라를 응용하여 코드를 작성했으나
+여전히 시간초과가 발생했다.
+가장 오래걸리는 길을 찾는 방식말고 다른 방법으로 접근해봐야 할 것 같다.

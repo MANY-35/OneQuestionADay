@@ -1,65 +1,47 @@
 #include<iostream>
 #include<vector>
-#include<queue>
 using namespace std;
 
-
-struct cmp {
-    bool operator()(vector<int> a, vector<int>b) {
-        if (a[1] > b[1])
-            return true;
-        return false;
+void dfs(vector<vector<int>> &arr, int now, int cost, vector<int> &times, vector<int> &dist, int &max) {
+    for(int i=0; i<arr[now].size(); i++) {
+        int nCost = times[arr[now][i]];
+        if(dist[arr[now][i]] < nCost + cost) {
+            dist[arr[now][i]] = nCost + cost;
+            if(max < nCost + cost)
+                max = nCost + cost;
+            dfs(arr, arr[now][i], nCost + cost, times, dist, max);    
+        }
     }
-};
+}
 
 int main(void) {
+    vector<int> answer;
     int TC;
     cin >> TC;
-    vector<int> answer;
-    while (TC--) {
-        int N, K; // 건물 , 규칙
+    while(TC--) {
+        int N, K;
         cin >> N >> K;
-        
-        int *timecost = new int[N];
-        for(int i=0; i<N; i++)
-            cin >> timecost[i];
-
-        int *code = new int[N];
-        int s = 1;
-        for (int i=0; i<N; i++, s*= 2)
-            code[i] = s;
-
-        int *possable = new int[N]();
+        vector<int> times;
+        for(int i=0, input; i<N; i++) {
+            cin >> input;
+            times.push_back(input);
+        }
+        vector<vector<int>> arr(N, vector<int>());
         for(int i=0; i<K; i++) {
             int x, y;
             cin >> x >> y;
-            possable[y-1] += code[x-1];
-        }
-        int vic;
-        cin >> vic;
-
-        int building = 0;
-        int time = 0;
-        priority_queue<vector<int>, vector<vector<int>>, cmp> que;
-        while (building < s/2) {
-            for(int i=0; i<N; i++) {
-                if (possable[i] < 0)
-                    continue;
-                int p = building&possable[i];
-                if (p == possable[i]) {
-                    possable[i] = -1;
-                    que.push(vector<int> {i, time+timecost[i]});
-                }
-            }
-            time = que.top()[1];
-            building += code[que.top()[0]];
-            cout << time << " " << building << endl;
-            if (que.top()[0] == vic)
-                break;
-            
-            que.pop();
-        }
-
-        cout << (time);
+            arr[y-1].push_back(x-1);
+        } 
+        int W;
+        cin >> W;
+        W--;
+        vector<int> dist(N,0);
+        int max = times[W];
+        dist[W] = times[W];
+        dfs(arr, W, times[W], times, dist, max);
+        answer.push_back(max);
     }
+    for(auto i : answer)
+        cout << i << endl;
+    return 0;
 }
