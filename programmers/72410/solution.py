@@ -30,7 +30,3 @@ def solution(new_id : str):
     for _ in range(len(answer), 3):
         answer += answer[-1]     
     return answer
-    
-    
-
-print(solution('...!@BaT#*..y.abcdefghijklm'))
