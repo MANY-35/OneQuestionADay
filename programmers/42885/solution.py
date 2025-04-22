@@ -1,12 +1,10 @@
-people = [70, 50, 80, 50]
-limit = 100
+def solution(people, limit):
+    arr = sorted(people, reverse=True)
 
-arr = sorted(people, reverse=True)
-
-i = 0
-while i < len(arr):
-    if (arr[i] + arr[-1]) <= limit:
-        arr.pop()
-    i += 1
+    i = 0
+    while i < len(arr):
+        if (arr[i] + arr[-1]) <= limit:
+            arr.pop()
+        i += 1
         
-print(i)
+    return i

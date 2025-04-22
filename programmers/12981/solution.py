@@ -1,6 +1,4 @@
 def solution(n, words):
-    answer = []
-
     i = 1
     stack = []
     stack.append(words[0])

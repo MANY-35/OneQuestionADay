@@ -1,5 +1,4 @@
 def solution(n,a,b):
-    
     i = 0
     while(a != b):
         i += 1

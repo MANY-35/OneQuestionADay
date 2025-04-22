@@ -28,5 +28,3 @@ def solution(citations):
         
     return answer
 
-
-print(solution([0,0,0,0,0]))
