@@ -30,7 +30,7 @@ def solution(cap, n, deliveries, pickups):
             tail = temp
     return answer
 ```
-> tail이라는 변수를 통해 트럭이 가야할 마지막 노드 까지를 계산하는 방식으로 풀어 보았으나 모든 케이스에서 실패했다.
+tail 이라는 변수를 통해 트럭이 가야할 마지막 노드 까지를 계산하는 방식으로 풀어 보았으나 모든 케이스에서 실패했다.
 
 *****
 
@@ -65,4 +65,4 @@ def solution(cap, n, deliveries, pickups):
             pickups.append([last[0], stack-cap])
     return answer
 ```
-> 비슷한 방식으로 풀되 스택을 이용하여 마지막 노드의 상자의 개수 만큼 빼고 짐칸이 남는다면 그 다음 노드에서 남은 짐의 개수 만큼 빼주는 식으로 풀었다.
+비슷한 방식으로 풀되 스택을 이용하여 마지막 노드의 상자의 개수 만큼 빼고 짐칸이 남는다면 그 다음 노드에서 남은 짐의 개수 만큼 빼주는 식으로 풀었다.

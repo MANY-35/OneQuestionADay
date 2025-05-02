@@ -1,6 +1,6 @@
 # LV2 서버 증설 횟수
 
-### 1차시도 (성공)
+### 1차 시도 (성공)
 ```py
 from collections import deque
 def solution(players, m, k):
@@ -21,4 +21,4 @@ def solution(players, m, k):
                 n -= temp[0]
     return count
 ```
-> 데큐를 이용하여 증설 기간이 끝나면 총원을 빼는 식으로 진행했다.
+데크를 이용하여 증설 기간이 끝나면 총원을 빼는 식으로 진행했다.

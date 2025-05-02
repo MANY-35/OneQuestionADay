@@ -21,7 +21,7 @@ def solution(genres, plays):
             answer.append(j[0])
     return answer
 ```
-> 3분의 2의 테스트에서 실패했다. 조건을 잘못 본것 같다.
+3분의 2의 테스트에서 실패했다. 조건을 잘못 본것 같다.
 
 *****
 
@@ -46,4 +46,4 @@ def solution(genres, plays):
             answer.append(j[0])
     return answer
 ```
-> 역시나 조건을 잘못보고 판단하여 실패했었다. 조건을 다시 확인하고 코드를 작성하였다.
+역시나 조건을 잘못보고 판단하여 실패했었다. 조건을 다시 확인하고 코드를 작성하였다.

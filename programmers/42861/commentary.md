@@ -15,7 +15,8 @@ def solution(n, costs):
             return answer
     return answer
 ```
-> 두개의 케이스만 통과했다. 알고리즘이 틀린것 같다. 가장 작은 길부터 연결하는 방식을 택했는데 고려하지 않은 것이 있는것 같다.
+두개의 케이스만 통과했다. 알고리즘이 틀린것 같다.  
+가장 작은 길부터 연결하는 방식을 택했는데 고려하지 않은 것이 있는것 같다.
 
 *****
 
@@ -42,4 +43,4 @@ def solution(n, costs):
             answer += c
     return answer
 ```
-> union-find 알고리즘이라는 것을 찾아서 적용시켜 풀었다.
+union-find 알고리즘이라는 것을 찾아서 적용시켜 풀었다.

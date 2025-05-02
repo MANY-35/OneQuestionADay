@@ -39,7 +39,8 @@ def solution(users, emoticons):
             max_result = [plus_users, total_sales]
     return max_result
 ```
-> 3개의 데이터 케이스에서 실패했다. 부동소수점 연산으로 인한 오류가 발생했다.
+3개의 데이터 케이스에서 실패했다.  
+부동소수점 연산으로 인한 오류가 발생했다.
 
 *****
 

@@ -22,7 +22,7 @@ def solution(gems):
             check = [gems[left]]
     return sorted(answer, key= lambda x:(x[1]-x[0], x[0]))[0]
 ```
-> 시간이 너무 걸려서 시간초과가 발생했다.
+시간이 너무 걸려서 시간초과가 발생했다.
 
 *****
 
@@ -36,7 +36,7 @@ def solution(gems):
                 return [i+1, i+l]
         l+=1
 ```
-> 간단하게 풀어보려했는데 역시 시간 초과가 발생했다. 
+간단하게 풀어보려했는데 역시 시간 초과가 발생했다. 
 
 *****
 
@@ -67,7 +67,7 @@ def solution(gems):
         right += 1
     return sorted(answer, key=lambda x:x[1]-x[0])[0]
 ```
-> 몇개의 케이스에서 실패했으며 효율성테스트 또환 시간초과가 대다수 발생했다.
+몇개의 케이스에서 실패했으며 효율성테스트 또환 시간초과가 대다수 발생했다.
 
 *****
 
@@ -97,7 +97,7 @@ def solution(gems):
         right += 1
     return sorted(answer, key=lambda x:x[1]-x[0])[0]
 ```
-> 이전 코드에서의 오류를 보안하여 모든 케이스에서 성공했지만 여전히 시간이 부족함
+이전 코드에서의 오류를 보안하여 모든 케이스에서 성공했지만 여전히 시간이 부족함
 
 *****
 
@@ -121,7 +121,7 @@ def solution(gems):
         right += 1
     return [answer[0]+1, answer[1]+1]
 ```
-> dic 와 set을 이용해 시간을 줄여보았는데 단 3개의 케이스에서 시간초과가 발생했다.
+dict 와 set을 이용해 시간을 줄여보았는데 단 3개의 케이스에서 시간초과가 발생했다.
 
 *****
 
@@ -147,4 +147,4 @@ def solution(gems):
         right += 1
     return [answer[0]+1, answer[1]+1]
 ```
-> 이전코드에서 check를 검사하는 방식을 바꿔서 불필요한 검사 시간을 줄였다.
+이전코드에서 check를 검사하는 방식을 바꿔서 불필요한 검사 시간을 줄였다.

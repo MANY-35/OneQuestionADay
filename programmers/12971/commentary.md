@@ -16,5 +16,5 @@ def solution(sticker):
         dp2[i] = max(dp2[i-1], dp2[i-2] + sticker[i])
     return max(max(dp1), max(dp2))
 ```
-> 며칠 동안 알고리즘적으로 고민하다가 도저히 방법이 떠오르지 않아 검색해보았다.
+며칠 동안 알고리즘적으로 고민하다가 도저히 방법이 떠오르지 않아 검색해보았다.
 

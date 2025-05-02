@@ -33,7 +33,8 @@ def solution(begin, target, words):
                     visted.append(i)
     return 0
 ```
-> 하나의 데이터케이스를 실패했다. 한글자만 다른지 확인하는 함수가 잘못된것 같다.
+하나의 데이터케이스를 실패했다.  
+한글자만 다른지 확인하는 함수가 잘못된것 같다.
 
 *****
 
@@ -65,4 +66,4 @@ def solution(begin, target, words):
                     visted.append(i)
     return 0
 ```
-> 단어를 비교하는 함수를 너무 힘들게 생각했던 것 같다.
+단어를 비교하는 함수를 너무 어렵게 생각했던 것 같다.
