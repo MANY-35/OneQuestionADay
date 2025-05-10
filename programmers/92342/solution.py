@@ -9,7 +9,6 @@ def solution(n, info):
             apeach += 10-i
         db.append([i, info[i]+1])
     m = 0
-    temp = []
     for i in range(1, 11):
         for j in combinations(db, i):
             sum = 0
@@ -27,17 +26,12 @@ def solution(n, info):
                 arr.append([10, n-shootCount])
             if m <= sum - ap:
                 m = sum-ap
-                temp.append((arr, sum, ap, m))
-    
-    for i in range(len(temp)):
-        print(temp[i])
-    
-    
-    # if n1 <= n2:
-    #     return [-1]
-    # answer = [0 for _ in range(11)]
-    # for i in temp:
-    #     answer[i[0]] = i[1]
-    # return answer
-print(solution(9, [0, 0, 1, 2, 0, 1, 1, 1, 1, 1, 1]))
-print(solution(10, [0, 0, 0, 0, 0, 0, 0, 0, 3, 4, 3]))
+                n2 = ap
+                n1 = sum
+                temp = arr
+    if n1 <= n2:
+        return [-1]
+    answer = [0 for _ in range(11)]
+    for i in temp:
+        answer[i[0]] = i[1]
+    return answer
