@@ -11,6 +11,10 @@ def solution(cards):
             count += 1
             j = cards[j]-1
         groups.append(count)
+    
+    if len(groups) < 2:
+        return 0
+        
     answer = sorted(groups, reverse=True)[:2]
     return answer[0] * answer[1]
 
