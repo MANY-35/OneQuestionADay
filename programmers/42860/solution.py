@@ -3,27 +3,24 @@ def displacement(ch):
     if t - ch < ch:
         return t - ch
     return ch
-    
+
 def solution(name):
     answer = 0
-    indexOfA = []
-    arr = [[0,0] for _ in range(len(name))]
+    minPath = len(name) - 1
+    
     for i in range(len(name)):
-        if name[i] == 'A':
-            indexOfA.append(i)
-            continue
         answer += displacement(name[i])
-    
-    
-    
-            
-    for i in range(len(name)):
-        print(name[i], end='\t')
-    print()
-    for i in arr:
-        print(i, end='\t')
         
-    
-    answer += len(name) - 1
-    return answer
-print(solution("JEAROAAAAAEN"))
+        next = i + 1
+        while next < len(name) and name[next] == 'A':
+            next += 1
+        if next - i > 1:    
+            minPath = min(minPath, i*2 + len(name) - next)
+            minPath = min(minPath, (len(name) - next)*2 + i)
+    return answer + minPath
+
+
+
+
+print(solution("AACALATLAHABAA")) # 1
+# print(solution("GTAASKKAE")) # 1
