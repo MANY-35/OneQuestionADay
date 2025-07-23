@@ -1,19 +1,11 @@
 
-def solution(board):
-    arr = [[] for _ in range(len(board))]    
-    for i in range(len(board)):
-        j = 0
-        while j < len(board[i]):
+def solution(board): 
+    for i in range(1, len(board)):
+        for j in range(1, len(board[i])):
             if board[i][j] == 1:
-                index = j
-                while j < len(board[i]) and board[i][j] == 1:
-                    j+=1
-                arr[i].append((index, j-index))
-            j+=1
-    for i in arr:
-        print(i)
-                
-                
+                board[i][j] = min(board[i-1][j], board[i][j-1], board[i-1][j-1]) + 1
+    return max(max(row) for row in board) ** 2
+    
     
 
-solution([[0,1,1,1],[1,1,1,1],[1,1,1,1],[0,0,1,0]])
+solution([[0,0,1,1],[1,1,1,1]])
