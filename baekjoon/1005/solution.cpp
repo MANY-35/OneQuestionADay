@@ -1,47 +1,40 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
-
-void dfs(vector<vector<int>> &arr, int now, int cost, vector<int> &times, vector<int> &dist, int &max) {
-    for(int i=0; i<arr[now].size(); i++) {
-        int nCost = times[arr[now][i]];
-        if(dist[arr[now][i]] < nCost + cost) {
-            dist[arr[now][i]] = nCost + cost;
-            if(max < nCost + cost)
-                max = nCost + cost;
-            dfs(arr, arr[now][i], nCost + cost, times, dist, max);    
-        }
+int dfs_dp(vector<pair<int, vector<int>>> &arr, vector<int> &dp, int now) {
+    if (dp[now] != -1) {
+        return dp[now];
     }
+    int max_prereq_time = 0;
+    for (int prereq : arr[now].second) {
+        max_prereq_time = max(max_prereq_time, dfs_dp(arr, dp, prereq));
+    }
+    dp[now] = max_prereq_time + arr[now].first;
+    return dp[now];
 }
-
 int main(void) {
-    vector<int> answer;
     int TC;
     cin >> TC;
-    while(TC--) {
+    vector<int> answer;
+    while (TC--) {
         int N, K;
         cin >> N >> K;
-        vector<int> times;
-        for(int i=0, input; i<N; i++) {
-            cin >> input;
-            times.push_back(input);
+        vector<pair<int, vector<int>>> arr(N+1);
+        for(int i=1; i<N+1; i++) {
+            int num;
+            cin >> num;
+            arr[i].first = num;
         }
-        vector<vector<int>> arr(N, vector<int>());
-        for(int i=0; i<K; i++) {
+        for (int i=0; i<K; i++) {
             int x, y;
             cin >> x >> y;
-            arr[y-1].push_back(x-1);
-        } 
-        int W;
-        cin >> W;
-        W--;
-        vector<int> dist(N,0);
-        int max = times[W];
-        dist[W] = times[W];
-        dfs(arr, W, times[W], times, dist, max);
-        answer.push_back(max);
+            arr[y].second.push_back(x);
+        }
+        int target;
+        cin >> target;
+        vector<int> dp(N + 1, -1);
+        int result = dfs_dp(arr, dp, target);
+        cout << result << "\n";
     }
-    for(auto i : answer)
-        cout << i << endl;
-    return 0;
 }
